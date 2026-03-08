@@ -1,0 +1,13 @@
+# CloudNativePG Operator configuration
+# https://github.com/cloudnative-pg/charts/tree/main/charts/cloudnative-pg
+
+# Default settings are sufficient for most deployments.
+# Override only what you need below.
+
+# Number of operator replicas. Increase for HA.
+replicaCount: 1
+
+# Monitoring configuration
+monitoring:
+  # Enable PodMonitor for Prometheus integration
+  podMonitorEnabled: false

@@ -1,0 +1,31 @@
+# CloudNativePG Cluster configuration for Coder's PostgreSQL database
+# https://github.com/cloudnative-pg/charts/tree/main/charts/cluster
+
+# PostgreSQL major version
+version:
+  postgresql: "17"
+
+cluster:
+  instances: 1
+  storage:
+    size: 10Gi
+
+  # PostgreSQL configuration overrides
+  postgresql:
+    parameters:
+      shared_buffers: "256MB"
+      effective_cache_size: "512MB"
+
+  # Enable superuser access (creates a secret named <cluster>-superuser)
+  enableSuperuserAccess: true
+
+  # Primary update strategy
+  primaryUpdateStrategy: unsupervised
+
+# Database initialization: create the "coder" database owned by "coder" user.
+# CloudNativePG auto-generates a Secret named "<release>-app" with connection
+# credentials (keys: dbname, host, port, user, password, uri, jdbc-uri).
+databases:
+  - name: coder
+    owner: coder
+    ensure: present

@@ -1,0 +1,5 @@
+[tools]
+coder = "2.31.3"
+helm = "4.1.1"
+helmfile = "1.3.0"
+kubectl = "1.35.1"

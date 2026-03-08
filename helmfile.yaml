@@ -1,0 +1,48 @@
+---
+repositories:
+  - name: tailscale
+    url: https://pkgs.tailscale.com/helmcharts
+  - name: coder-v2
+    url: https://helm.coder.com/v2
+  - name: cnpg
+    url: https://cloudnative-pg.github.io/charts
+
+---
+releases:
+  # Tailscale Kubernetes Operator
+  - name: tailscale-operator
+    namespace: tailscale
+    chart: tailscale/tailscale-operator
+    version: 1.94.2
+    values:
+      - "./values/tailscale.yaml"
+
+  # CloudNativePG Operator
+  - name: cnpg
+    namespace: cnpg-system
+    createNamespace: true
+    chart: cnpg/cloudnative-pg
+    version: 0.27.1
+    values:
+      - "./values/cnpg-operator.yaml"
+
+  # PostgreSQL Cluster for Coder (managed by CloudNativePG)
+  - name: coder-db
+    namespace: coder
+    createNamespace: true
+    chart: cnpg/cluster
+    version: 0.6.0
+    needs:
+      - cnpg-system/cnpg
+    values:
+      - "./values/cnpg-cluster.yaml"
+
+  # Coder
+  - name: coder
+    namespace: coder
+    chart: coder-v2/coder
+    version: 2.29.5
+    needs:
+      - coder/coder-db
+    values:
+      - "./values/coder.yaml"

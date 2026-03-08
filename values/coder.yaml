@@ -1,0 +1,30 @@
+# Coder configuration
+# https://github.com/coder/coder/blob/main/helm/coder/values.yaml
+
+coder:
+  env:
+    # PostgreSQL connection URL from CloudNativePG auto-generated secret.
+    # The cnpg/cluster chart creates a Cluster named "<release>-cluster",
+    # and the app secret is named "<release>-cluster-app".
+    - name: CODER_PG_CONNECTION_URL
+      valueFrom:
+        secretKeyRef:
+          name: coder-db-cluster-app
+          key: uri
+
+    # Access URL for Coder (used by workspaces to connect back to Coder).
+    # This should match the Tailscale Ingress hostname.
+    - name: CODER_ACCESS_URL
+      value: "https://coder"
+
+    # Disable the default GitHub OAuth2 provider for production deployments.
+    - name: CODER_OAUTH2_GITHUB_DEFAULT_PROVIDER_ENABLE
+      value: "false"
+
+  ingress:
+    enable: true
+    className: tailscale
+    host: "coder"
+    annotations: {}
+    tls:
+      enable: true
